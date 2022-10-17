@@ -10,21 +10,18 @@ import (
 )
 
 func (h *Handlers) createUser(ctx context.Context, uInfo models.UserCredentials, k string) (string, error) {
-	// expInSeconds := 1000
-
 	conn := h.app.Pool.Get()
 	defer conn.Close()
-	// id := uuid.New()
-	// fmt.Println(id.String())
 
 	// we may have more info in userCredential, doing like so we make sure we only set these
-	// k := models.UserIDKey(id.String())
+	k = models.UserIDKey(k)
 
 	_, err := conn.Do("HSET", redis.Args{}.Add(k).AddFlat(serializeUser(uInfo))...)
 	// _, err = conn.Do("EXPIRE", k, expInSeconds)
 	if err != nil {
 		return "", err
 	}
+
 	return k, nil
 }
 

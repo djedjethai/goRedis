@@ -26,11 +26,13 @@ func routes() http.Handler {
 	// login
 	mux.Get("/", handler.Test())
 
-	mux.Post("/signin", handler.Signin())
+	mux.Post("/signin/{id}", handler.Signin())
+	mux.Get("/user/{id}", handler.GetUser())
 
 	mux.Route("/api", func(mux chi.Router) {
-		mux.Use(auth)
-
+		// mux.Use(auth)
+		mux.Post("/createitem", handler.CreateItem())
+		mux.Get("/getitem/{id}", handler.GetItem())
 	})
 
 	return mux

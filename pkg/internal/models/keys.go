@@ -15,3 +15,7 @@ func UserIDKey(uid string) string {
 func SessionKey(sid string) string {
 	return fmt.Sprintf("sessions#%s", sid)
 }
+
+func ItemsKey(iid string) string {
+	return fmt.Sprintf("session#%s", iid)
+}

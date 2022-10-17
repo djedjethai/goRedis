@@ -30,6 +30,10 @@ func init() {
 	_ = os.Setenv("TZ", "UTC")
 }
 
+// TODO the token is the redis' key of the users data
+// so middleware authenticate should be ok like it is,
+// then in each handler if need the users data, redis need to be call with the token as key
+
 func main() {
 
 	insecurePort, err := setupApp()
@@ -43,17 +47,7 @@ func main() {
 		Dial: func() (redis.Conn, error) {
 			return redis.Dial("tcp", ":6379")
 		},
-		// Dial: func() (redis.Conn, error) {
-		// 	c, err := redis.Dial("tcp", ":6379")
-		// 	if err != nil {
-		// 		panic(err.Error())
-		// 	}
-		// 	return c, err
-		// },
 	}
-
-	// conn := rPool.Get()
-	// defer conn.Close()
 
 	app.Pool = rPool
 
