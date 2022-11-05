@@ -33,6 +33,7 @@ func routes() http.Handler {
 		// mux.Use(auth)
 		mux.Post("/createitem", handler.CreateItem())
 		mux.Get("/getitem/{id}", handler.GetItem())
+		mux.Post("/getitems", handler.GetItems())
 	})
 
 	return mux

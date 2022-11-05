@@ -2,7 +2,10 @@ package handlers
 
 import (
 	"context"
+	// "encoding/json"
 	"fmt"
+	"strings"
+
 	// "strconv"
 	"time"
 
@@ -25,16 +28,49 @@ func (h *Handlers) getItem(ctx context.Context, iid string) models.Item {
 
 	redis.ScanStruct(values, &i)
 
-	it := deSerializeItem(i)
-
-	it.ID = iid
+	it := deSerializeItem(iid, i)
 
 	return it
 }
 
-func (h *Handlers) getItems(iids []string) models.Item {
+// a1388cd2-017f-4634-80bc-2c82823c38b4, 0c8b2ae4-fbfc-4a72-b0bf-403b9c195859
+func (h *Handlers) getItems(iids []string) ([]models.Item, error) {
+	conn := h.app.Pool.Get()
+	defer conn.Close()
 
-	return models.Item{}
+	var items = []models.Item{}
+
+	// Initialize Pipeline
+	conn.Send("MULTI")
+
+	// Send writes the command to the connection's output buffer
+	var s string
+	for _, v := range iids {
+		s = models.ItemsKey(strings.TrimSpace(v))
+		conn.Send("HGETALL", s)
+	}
+
+	// Execute the Pipeline
+	pipe_prox, err := redis.Values(conn.Do("EXEC"))
+	if err != nil {
+		return items, err
+	}
+
+	// Use the generic redis.Values to break down this outer structure first
+	// then we can parse the inner slices.
+	ita := models.ItemAttr{}
+	for i, r := range pipe_prox {
+		// s, _ := redis.Strings(r, nil)
+		s, _ := redis.Values(r, nil)
+
+		redis.ScanStruct(s, &ita)
+
+		it := deSerializeItem(iids[i], ita)
+
+		items = append(items, it)
+	}
+
+	return items, nil
 }
 
 func (h *Handlers) createItem(it models.Item) (string, error) {
@@ -72,11 +108,12 @@ func unixTimestampsToTimeTime(t int64) time.Time {
 	// return tm
 }
 
-func deSerializeItem(i models.ItemAttr) models.Item {
+func deSerializeItem(id string, i models.ItemAttr) models.Item {
 	// convert unix timestamps to time.Time
 
 	// Here i do not change time to string, let see ??
 	return models.Item{
+		ID:               id,
 		ImageURL:         i.ImageURL,
 		Description:      i.Description,
 		Duration:         i.Duration,
