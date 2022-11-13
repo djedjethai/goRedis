@@ -34,6 +34,9 @@ func routes() http.Handler {
 		mux.Post("/createitem", handler.CreateItem())
 		mux.Get("/getitem/{id}", handler.GetItem())
 		mux.Post("/getitems", handler.GetItems())
+		mux.Post("/likeitem", handler.LikeItem())
+		mux.Post("/unlikeitem", handler.UnlikeItem())
+		mux.Post("/userlikesitem", handler.UserLikesItem())
 	})
 
 	return mux

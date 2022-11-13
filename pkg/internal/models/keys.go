@@ -19,3 +19,11 @@ func SessionKey(sid string) string {
 func ItemsKey(iid string) string {
 	return fmt.Sprintf("session#%s", iid)
 }
+
+func UsernamesUniqueKey() string {
+	return "username:unique"
+}
+
+func UserLikesKey(uid string) string {
+	return fmt.Sprintf("users:likes#%v", uid)
+}
