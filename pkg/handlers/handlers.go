@@ -80,6 +80,29 @@ func (h *Handlers) GetUser() http.HandlerFunc {
 	}
 }
 
+// func (h *Handlers) GetUserByUsername() http.HandlerFunc {
+// 	return func(w http.ResponseWriter, r *http.Request) {
+//
+// 		type uname struct {
+// 			Username string `json:"username"`
+// 		}
+//
+// 		un := uname{}
+//
+// 		err := h.Json.ReadJson(w, r, &un)
+// 		if err != nil {
+// 			h.Json.BadRequest(w, r, err)
+// 		}
+//
+// 		ctx := context.Background()
+// 		user := h.GetUserByUsername(ctx, un)
+//
+// 		fmt.Println("see the user: ", user)
+//
+// 		h.Json.WriteJson(w, http.StatusOK, user)
+// 	}
+// }
+
 func (h *Handlers) GetItems() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 

@@ -89,10 +89,27 @@ func (h *Handlers) createItem(it models.Item) (string, error) {
 
 	fmt.Println("see nv: ", nv)
 
-	_, err := conn.Do("HSET", redis.Args{}.Add(k).AddFlat(nv)...)
+	// TODO pipelining these 2 cmd
+	// _, err := conn.Do("HSET", redis.Args{}.Add(k).AddFlat(nv)...)
+	// if err != nil {
+	// 	return "", err
+	// }
+	// // set the number of views in the sortedSet registering it
+	// _, err = conn.Do("ZADD", models.ItemsByViewsKey(), 0, id)
+	// if err != nil {
+	// 	return "", err
+	// }
+
+	// the pipeline (6ff52659-8259-4871-8a74-91a64edf543c)
+	conn.Send("MULTI")
+	conn.Send("HSET", redis.Args{}.Add(k).AddFlat(nv)...)
+	conn.Send("ZADD", models.ItemsByViewsKey(), 0, id)
+	pipe_prox, err := conn.Do("EXEC")
 	if err != nil {
 		return "", err
 	}
+
+	fmt.Println("seeee the pipe_prox: ", pipe_prox)
 
 	return id, nil
 }

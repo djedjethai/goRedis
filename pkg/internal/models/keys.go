@@ -16,14 +16,23 @@ func SessionKey(sid string) string {
 	return fmt.Sprintf("sessions#%s", sid)
 }
 
-func ItemsKey(iid string) string {
-	return fmt.Sprintf("session#%s", iid)
-}
-
 func UsernamesUniqueKey() string {
 	return "username:unique"
 }
 
 func UserLikesKey(uid string) string {
 	return fmt.Sprintf("users:likes#%v", uid)
+}
+
+func UserNamesKey() string {
+	return "usernames"
+}
+
+// Items
+func ItemsKey(iid string) string {
+	return fmt.Sprintf("session#%s", iid)
+}
+
+func ItemsByViewsKey() string {
+	return "items:views"
 }
