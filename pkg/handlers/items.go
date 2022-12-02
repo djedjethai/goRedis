@@ -100,10 +100,13 @@ func (h *Handlers) createItem(it models.Item) (string, error) {
 	// 	return "", err
 	// }
 
+	fmt.Println("seee the CreatedAt unix timestamp: ", it.CreatedAt.Unix())
+
 	// the pipeline (6ff52659-8259-4871-8a74-91a64edf543c)
 	conn.Send("MULTI")
 	conn.Send("HSET", redis.Args{}.Add(k).AddFlat(nv)...)
 	conn.Send("ZADD", models.ItemsByViewsKey(), 0, id)
+	conn.Send("ZADD", models.ItemsByEndingAtKey(), it.CreatedAt.Unix(), id)
 	pipe_prox, err := conn.Do("EXEC")
 	if err != nil {
 		return "", err

@@ -40,6 +40,7 @@ func routes() http.Handler {
 		mux.Post("/likeditems", handler.LikedItems())
 		mux.Post("/commonlikeditems", handler.CommonLikedItems())
 		mux.Post("/incrementviews", handler.IncrementViews())
+		mux.Post("/itemsbyendingtime", handler.ItemsByEndingTime())
 	})
 
 	return mux

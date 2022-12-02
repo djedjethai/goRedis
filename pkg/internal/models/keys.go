@@ -31,8 +31,13 @@ func UserNamesKey() string {
 // Items
 func ItemsKey(iid string) string {
 	return fmt.Sprintf("session#%s", iid)
+	// return fmt.Sprintf("items#%s", iid) // should be
 }
 
 func ItemsByViewsKey() string {
 	return "items:views"
+}
+
+func ItemsByEndingAtKey() string {
+	return "items:endingAt"
 }
